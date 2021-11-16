@@ -2,10 +2,22 @@ const Review = require('./Models/Review.js');
 const Characteristic = require('./Models/Characteristic.js');
 const Characteristic_Review = require('./Models/Characteristic_Review.js');
 const Reviews_Photo = require('./Models/Reviews_Photo.js');
+const Product = require('./Models/Product.js');
 
 const getReviews = function(productId, sort, page, count) {
   let off = page * count - count;
   return Review.findAll({ 
+    attributes: [
+      review_id,
+      rating,
+      summary,
+      recommend,
+      response,
+      body,
+      date,
+      reviewer_name,
+      helpfulness,
+    ],
     where: {
       product_id: productId
     },

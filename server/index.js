@@ -21,7 +21,11 @@ app.get('/reviews', (req, res) => {
   let productId = parseInt(req.query.product_id);
   let sort = req.query.sort;
 
-  Review_Api.getReviews(productId, 'new', page, count).then((results) => {
+  let resObj = {};
+  resObj.product = productId;
+  resObj.page = page;
+  resObj.count = count;
+  Review_Api.getReviews(productId, sort, page, count).then((results) => {
     res.json(results);
   }).catch((error) => {
     console.log(error);

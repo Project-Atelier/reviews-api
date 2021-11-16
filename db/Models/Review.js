@@ -1,5 +1,6 @@
 const { Sequelize, Model, DataTypes } = require('sequelize');
 const seq = require('../db.js');
+const Reviews_Photo = require('./Reviews_Photo.js');
 class Review extends Model {}
 
 Review.init({
@@ -10,7 +11,11 @@ Review.init({
   },
   product_id: {
     type: DataTypes.INTEGER,
-    allowNull: false
+    allowNull: false,
+    references:{
+      model:"Products",
+      key: 'id'
+    },
   },
   rating: {
     type: DataTypes.INTEGER,
@@ -72,5 +77,7 @@ Review.init({
 }, {
   sequelize: seq
 });
+
+// Review.hasMany(Reviews_Photo, {foreignKey: 'review_id', sourceKey: 'review_id'});
 
 module.exports = Review;

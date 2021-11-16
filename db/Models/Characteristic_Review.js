@@ -12,10 +12,18 @@ Characteristic_Review.init({
   review_id: {
     type: DataTypes.INTEGER,
     allowNull: false,
+    references: {
+      model:"Reviews",
+      key: 'review_id'
+    },
   },
   characteristic_id: {
     type: DataTypes.INTEGER,
     allowNull: false,
+    references: {
+      model:"Characteristics",
+      key: 'id'
+    },
   },
   value: {
     type: DataTypes.INTEGER,
