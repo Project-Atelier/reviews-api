@@ -1,5 +1,8 @@
 const { Sequelize, Model, DataTypes } = require('sequelize');
 const seq = require('../db.js');
+const Characteristic = require('./Characteristic.js');
+const Characteristic_Review = require('./Characteristic_Review.js');
+const Reviews_Photo = require('./Reviews_Photo.js');
 class Review extends Model {}
 
 Review.init({
@@ -73,4 +76,66 @@ Review.init({
   sequelize: seq
 });
 
+const getReviews = function(productId, page, count) {
+  let off = page * count - count;
+  return Review.findAll({ 
+    where: {
+      product_id: productId
+    },
+    offset: off, 
+    limit: count 
+  });
+}
+
+const getMeta = function(productId) {
+  let ratingsObj = {};
+  getRatings(productId).then((vals) => {
+    for (var i = 0; i < vals.length; i++) {
+      ratingsObj[i+1] = vals[i];
+    }
+  });
+  let recObj = {};
+  getRecommended(productId).then((val) => {
+    recObj[0] = val;
+  });
+  
+}
+
+const getRatings = function(productId) {
+  let proms = [];
+  for (var i = 1; i < 6; i++) {
+    proms.push(Review.count({ 
+      where: {
+        product_id: productId
+        rating: i;
+      },
+    }));
+  }
+  return Promise.all(proms);
+}
+const getRecommended = function(productId) {
+  return Review.count({ 
+      where: {
+        product_id: productId
+        recommend: true;
+      },
+  );
+}
+const getChars = function(productId) {
+  Characteristic.findAll({ 
+    where: {
+      product_id: productId
+    },
+  });
+}
+
+
+const addReview = function(obj) {
+  obj.date = Date.now();
+  return Review.create(obj);
+}
+
 module.exports = Review;
+module.exports.getReviews = getReviews;
+module.exports.addReview = addReview;
+
