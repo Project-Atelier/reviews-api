@@ -1,0 +1,10 @@
+**/dist/main.js
+config.js
+.DS_Store
+**/dist/**chunk.js
+**/dist/bundle.js
+node_modules
+.vscode
+/*.env
+package-lock.json
+**bundle.js**
