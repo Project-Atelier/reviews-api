@@ -1,5 +1,5 @@
 const express = require('express');
-const sequelize = require('sequelize');
+const sequelize = require('../db/db.js');
 const app = express();
 const port = 3000;
 
