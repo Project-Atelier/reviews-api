@@ -21,7 +21,7 @@ Review.init({
     }
   }, 
   date: {
-    type: DataTypes.DATE,
+    type: DataTypes.BIGINT,
     allowNull: false,
   },
   summary: {
@@ -30,7 +30,7 @@ Review.init({
       len: [0,60],
     },
   },
-  summary: {
+  body: {
     type: DataTypes.TEXT,
     allowNull: false,
     validate: {
