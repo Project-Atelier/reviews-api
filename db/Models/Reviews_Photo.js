@@ -1,25 +1,25 @@
 const { Sequelize, Model, DataTypes } = require('sequelize');
-const sequelize = require('../db.js');
+const seq = require('../db.js');
 
-class Characteristics extends Model {}
+class Reviews_Photo extends Model {}
 
-Characteristics.init({
+Reviews_Photo.init({
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true
   },
-  product_id: {
+  review_id: {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
-  name: {
+  url: {
     type: DataTypes.TEXT,
     allowNull: false,
   },
 
 }, {
-  sequelize: sequelize
+  sequelize: seq
 });
 
-module.export = Characteristics;
+module.exports = Reviews_Photo;

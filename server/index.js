@@ -1,9 +1,11 @@
 const express = require('express');
-const sequelize = require('../db/db.js');
+const seq = require('../db/db.js');
+const Review = require('../db/Models/Review.js');
+const Characteristic = require('../db/Models/Characteristic.js');
+const Reviews_Photo = require('../db/Models/Reviews_Photo.js');
+const Characteristic_Review = require('../db/Models/Characteristic_Review.js');
 const app = express();
 const port = 3000;
-
-
 
 
 

@@ -1,9 +1,9 @@
 const { Sequelize, Model, DataTypes } = require('sequelize');
-const sequelize = require('../db.js');
+const seq = require('../db.js');
 
-class Characteristic_Reviews extends Model {}
+class Characteristic_Review extends Model {}
 
-Characteristic_Reviews.init({
+Characteristic_Review.init({
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -27,7 +27,7 @@ Characteristic_Reviews.init({
   },
 
 }, {
-  sequelize: sequelize
+  sequelize: seq
 });
 
-module.export = Characteristic_Reviews;
+module.exports = Characteristic_Review;

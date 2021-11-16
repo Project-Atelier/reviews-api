@@ -1,9 +1,8 @@
 const { Sequelize, Model, DataTypes } = require('sequelize');
-const sequelize = require('../db.js');
+const seq = require('../db.js');
+class Review extends Model {}
 
-class Reviews extends Model {}
-
-Reviews.init({
+Review.init({
   review_id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -71,7 +70,7 @@ Reviews.init({
   }
 
 }, {
-  sequelize: sequelize
+  sequelize: seq
 });
 
-module.export = Reviews;
+module.exports = Review;
