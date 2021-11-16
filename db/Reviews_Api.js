@@ -3,7 +3,7 @@ const Characteristic = require('./Models/Characteristic.js');
 const Characteristic_Review = require('./Models/Characteristic_Review.js');
 const Reviews_Photo = require('./Models/Reviews_Photo.js');
 
-const getReviews = function(productId, page, count) {
+const getReviews = function(productId, sort, page, count) {
   let off = page * count - count;
   return Review.findAll({ 
     where: {

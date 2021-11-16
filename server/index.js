@@ -2,14 +2,32 @@ const express = require('express');
 const seq = require('../db/db.js');
 const Review_Api = require('../db/Reviews_Api.js');
 const app = express();
+app.use(express.json());
 const port = 3000;
 
 // Review.getChars(5).then((results) => {
 //   console.log(results);
 // });
 
-app.get('/', (req, res) => {
-  res.send('Hello World!')
+app.get('/reviews', (req, res) => {
+  let count = 5;
+  let page = 1;
+  if (req.query.count) {
+    count = parseInt(req.query.count);
+  }
+  if (req.query.page) {
+    page = parseInt(req.query.page);
+  }
+  let productId = parseInt(req.query.product_id);
+  let sort = req.query.sort;
+
+  Review_Api.getReviews(productId, 'new', page, count).then((results) => {
+    res.json(results);
+  }).catch((error) => {
+    console.log(error);
+    res.status(500);
+    res.send(error);
+  });
 });
 
 app.listen(port, () => {
