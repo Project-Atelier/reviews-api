@@ -69,6 +69,7 @@ app.put('/reviews/:review_id/report', (req, res) => {
 
 app.post('/reviews', (req, res) => {
   Review_Api.addReview(req.body).then((results) => {
+    // console.log(results);
     res.sendStatus(201);
   }).catch((error) => {
     console.log(error);

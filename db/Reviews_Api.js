@@ -104,7 +104,23 @@ const addReview = function(obj) {
   newObj.response = null;
   // newObj.helpfulness = 0;
 
-  return Review.create(newObj);
+  return Review.create(newObj)
+  .then((result) => {
+    if (obj.photos) {
+      console.log(obj.photos);
+      let rid = result.dataValues.review_id;
+      let photos = [];
+      for (var i = 0; i < obj.photos.length; i++) {
+        photos.push(addReviewPhoto(rid, obj.photos[i]));
+      }
+      return Promise.all(photos);
+    }
+    
+  });
+}
+
+const addReviewPhoto = function(review_id, url) {
+  return Reviews_Photo.create({ review_id: review_id, url: url});
 }
 
 const markHelpful = function(review_id) {
