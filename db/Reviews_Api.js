@@ -92,9 +92,16 @@ const addReview = function(obj) {
   return Review.create(obj);
 }
 
+const markHelpful = function(review_id) {
+  return Review.increment('helpfulness', { 
+    where: { review_id: review_id }
+  });
+}
+
 module.exports.getReviews = getReviews;
 module.exports.addReview = addReview;
 module.exports.getChars = getChars;
 module.exports.getCharReviewAverage = getCharReviewAverage;
 module.exports.getMeta = getMeta;
+module.exports.markHelpful = markHelpful;
 
