@@ -1,6 +1,6 @@
 const { Sequelize, Model, DataTypes } = require('sequelize');
 const seq = require('../db.js');
-const Reviews_Photo = require('./Reviews_Photo.js');
+// const Reviews_Photo = require('./Reviews_Photo.js');
 class Review extends Model {}
 
 Review.init({

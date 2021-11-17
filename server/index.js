@@ -34,6 +34,22 @@ app.get('/reviews', (req, res) => {
   });
 });
 
+app.get('/reviews/meta', (req, res) => {
+  let productId = parseInt(req.query.product_id);
+  let resObj = {};
+  resObj.product = productId;
+
+  Review_Api.getMeta(productId).then((results) => {
+    resObj.ratings = results[0];
+    resObj.recommended = results[1];
+    res.json(resObj);
+  }).catch((error) => {
+    console.log(error);
+    res.status(500);
+    res.send(error);
+  });
+});
+
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
 });

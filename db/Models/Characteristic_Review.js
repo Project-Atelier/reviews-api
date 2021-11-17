@@ -9,20 +9,20 @@ Characteristic_Review.init({
     primaryKey: true,
     autoIncrement: true
   },
-  review_id: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-      model:"Reviews",
-      key: 'review_id'
-    },
-  },
   characteristic_id: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
       model:"Characteristics",
       key: 'id'
+    },
+  },
+  review_id: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model:"Reviews",
+      key: 'review_id'
     },
   },
   value: {

@@ -26,10 +26,8 @@ Product.init({
     type: DataTypes.INTEGER,
     allowNull: false,
   }
-
 }, {
   sequelize: seq
 });
-
 
 module.exports = Product;

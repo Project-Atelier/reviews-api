@@ -26,17 +26,20 @@ const getReviews = function(productId, sort, page, count) {
   });
 }
 
-const getMeta = function(productId) {
+const getMeta = async function(productId) {
   let ratingsObj = {};
-  getRatings(productId).then((vals) => {
+  let recObj = {};
+
+  let proms = [getRatings(productId).then((vals) => {
     for (var i = 0; i < vals.length; i++) {
       ratingsObj[i+1] = vals[i];
     }
-  });
-  let recObj = {};
+  }),  
   getRecommended(productId).then((val) => {
     recObj[0] = val;
-  });
+  })];
+  await Promise.all(proms);
+  return [ratingsObj, recObj];
 }
 
 const getRatings = function(productId) {
@@ -93,4 +96,5 @@ module.exports.getReviews = getReviews;
 module.exports.addReview = addReview;
 module.exports.getChars = getChars;
 module.exports.getCharReviewAverage = getCharReviewAverage;
+module.exports.getMeta = getMeta;
 
