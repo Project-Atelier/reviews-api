@@ -60,6 +60,16 @@ app.get('/reviews/:review_id/helpful', (req, res) => {
   });
 });
 
+app.get('/reviews/:review_id/report', (req, res) => {
+  Review_Api.reportReview(req.params.review_id).then((results) => {
+    res.sendStatus(204);
+  }).catch((error) => {
+    console.log(error);
+    res.status(500);
+    res.send(error);
+  });
+});
+
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)

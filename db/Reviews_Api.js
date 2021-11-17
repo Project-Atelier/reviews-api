@@ -98,10 +98,16 @@ const markHelpful = function(review_id) {
   });
 }
 
+const reportReview = function(review_id) {
+  return Review.update({ reported: true }, { 
+    where: { review_id: review_id }
+  });
+}
+
 module.exports.getReviews = getReviews;
 module.exports.addReview = addReview;
 module.exports.getChars = getChars;
 module.exports.getCharReviewAverage = getCharReviewAverage;
 module.exports.getMeta = getMeta;
 module.exports.markHelpful = markHelpful;
-
+module.exports.reportReview = reportReview;
