@@ -88,7 +88,6 @@ const getCharReviewAverage = function(charId) {
   });
 }
 
-
 const addReview = function(obj) {
   let newObj = {};
   newObj.review_id = null;
@@ -106,21 +105,21 @@ const addReview = function(obj) {
 
   return Review.create(newObj)
   .then((result) => {
+    let proms = [];
+    let rid = result.dataValues.review_id;
     if (obj.photos) {
-      console.log(obj.photos);
-      let rid = result.dataValues.review_id;
-      let photos = [];
+      // console.log(obj.photos);
       for (var i = 0; i < obj.photos.length; i++) {
-        photos.push(addReviewPhoto(rid, obj.photos[i]));
+        proms.push(Reviews_Photo.create({ review_id: rid, url: obj.photos[i]}));
       }
-      return Promise.all(photos);
     }
-    
+    let chars = Object.keys(obj.characteristics);
+    let vals = Object.values(obj.characteristics);
+    for (var j = 0; j < chars.length; j++) {
+      proms.push(Characteristic_Review.create({ review_id: rid, value: vals[j], characteristic_id: parseInt(chars[j])}))
+    }
+    return Promise.all(proms);
   });
-}
-
-const addReviewPhoto = function(review_id, url) {
-  return Reviews_Photo.create({ review_id: review_id, url: url});
 }
 
 const markHelpful = function(review_id) {
