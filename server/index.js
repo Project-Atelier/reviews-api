@@ -5,10 +5,6 @@ const app = express();
 app.use(express.json());
 const port = 3000;
 
-// Review.getChars(5).then((results) => {
-//   console.log(results);
-// });
-
 app.get('/reviews', (req, res) => {
   let count = 5;
   let page = 1;
@@ -50,7 +46,7 @@ app.get('/reviews/meta', (req, res) => {
   });
 });
 
-app.get('/reviews/:review_id/helpful', (req, res) => {
+app.put('/reviews/:review_id/helpful', (req, res) => {
   Review_Api.markHelpful(req.params.review_id).then((results) => {
     res.sendStatus(204);
   }).catch((error) => {
@@ -60,7 +56,7 @@ app.get('/reviews/:review_id/helpful', (req, res) => {
   });
 });
 
-app.get('/reviews/:review_id/report', (req, res) => {
+app.put('/reviews/:review_id/report', (req, res) => {
   Review_Api.reportReview(req.params.review_id).then((results) => {
     res.sendStatus(204);
   }).catch((error) => {

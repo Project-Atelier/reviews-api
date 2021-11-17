@@ -32,7 +32,9 @@ const getMeta = async function(productId) {
 
   let proms = [getRatings(productId).then((vals) => {
     for (var i = 0; i < vals.length; i++) {
-      ratingsObj[i+1] = vals[i];
+      if (vals[i] > 0) {
+        ratingsObj[i+1] = vals[i];
+      }
     }
   }),  
   getRecommended(productId).then((val) => {
