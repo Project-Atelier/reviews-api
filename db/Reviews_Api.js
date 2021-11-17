@@ -90,8 +90,21 @@ const getCharReviewAverage = function(charId) {
 
 
 const addReview = function(obj) {
-  obj.date = Date.now();
-  return Review.create(obj);
+  let newObj = {};
+  newObj.review_id = null;
+  newObj.product_id = obj.product_id;
+  newObj.rating = obj.rating;
+  newObj.date = Date.now();
+  newObj.summary = obj.summary;
+  newObj.body = obj.body;
+  newObj.recommend = obj.recommend;
+  // newObj.reported = null;
+  newObj.reviewer_name = obj.name;
+  newObj.reviewer_email = obj.email;
+  newObj.response = null;
+  // newObj.helpfulness = 0;
+
+  return Review.create(newObj);
 }
 
 const markHelpful = function(review_id) {

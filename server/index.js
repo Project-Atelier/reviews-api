@@ -47,7 +47,7 @@ app.get('/reviews/meta', (req, res) => {
 });
 
 app.put('/reviews/:review_id/helpful', (req, res) => {
-  Review_Api.markHelpful(req.params.review_id).then((results) => {
+  Review_Api.addReview(req.params.review_id).then((results) => {
     res.sendStatus(204);
   }).catch((error) => {
     console.log(error);
@@ -57,8 +57,9 @@ app.put('/reviews/:review_id/helpful', (req, res) => {
 });
 
 app.put('/reviews/:review_id/report', (req, res) => {
+  
   Review_Api.reportReview(req.params.review_id).then((results) => {
-    res.sendStatus(204);
+    res.sendStatus(201);
   }).catch((error) => {
     console.log(error);
     res.status(500);
@@ -66,13 +67,16 @@ app.put('/reviews/:review_id/report', (req, res) => {
   });
 });
 
+app.post('/reviews', (req, res) => {
+  Review_Api.addReview(req.body).then((results) => {
+    res.sendStatus(201);
+  }).catch((error) => {
+    console.log(error);
+    res.status(500);
+    res.send(error);
+  });
+});
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
 });
-
-// Review_Api.getCharReviewAverage(2).then((results) => {
-//   console.log(results);
-// }).catch((err) => {
-//   console.log(err);
-// });
