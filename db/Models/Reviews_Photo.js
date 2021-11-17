@@ -12,6 +12,10 @@ Reviews_Photo.init({
   review_id: {
     type: DataTypes.INTEGER,
     allowNull: false,
+    references:{
+      model:"Reviews",
+      key: 'review_id'
+    },
   },
   url: {
     type: DataTypes.TEXT,

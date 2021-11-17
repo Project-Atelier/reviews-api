@@ -12,6 +12,10 @@ Characteristic.init({
   product_id: {
     type: DataTypes.INTEGER,
     allowNull: false,
+    references:{
+      model:"Products",
+      key: 'id'
+    },
   },
   name: {
     type: DataTypes.TEXT,
