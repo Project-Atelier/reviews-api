@@ -5,10 +5,6 @@ const app = express();
 app.use(express.json());
 const port = 3000;
 
-// Review.getChars(5).then((results) => {
-//   console.log(results);
-// });
-
 app.get('/reviews', (req, res) => {
   let count = 5;
   let page = 1;
@@ -37,7 +33,7 @@ app.get('/reviews', (req, res) => {
 app.get('/reviews/meta', (req, res) => {
   let productId = parseInt(req.query.product_id);
   let resObj = {};
-  resObj.product = productId;
+  resObj.product_id = productId;
 
   Review_Api.getMeta(productId).then((results) => {
     resObj.ratings = results[0];
@@ -50,12 +46,38 @@ app.get('/reviews/meta', (req, res) => {
   });
 });
 
+app.put('/reviews/:review_id/helpful', (req, res) => {
+  Review_Api.addReview(req.params.review_id).then((results) => {
+    res.sendStatus(204);
+  }).catch((error) => {
+    console.log(error);
+    res.status(500);
+    res.send(error);
+  });
+});
+
+app.put('/reviews/:review_id/report', (req, res) => {
+  
+  Review_Api.reportReview(req.params.review_id).then((results) => {
+    res.sendStatus(201);
+  }).catch((error) => {
+    console.log(error);
+    res.status(500);
+    res.send(error);
+  });
+});
+
+app.post('/reviews', (req, res) => {
+  Review_Api.addReview(req.body).then((results) => {
+    // console.log(results);
+    res.sendStatus(201);
+  }).catch((error) => {
+    console.log(error);
+    res.status(500);
+    res.send(error);
+  });
+});
+
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
 });
-
-// Review_Api.getCharReviewAverage(2).then((results) => {
-//   console.log(results);
-// }).catch((err) => {
-//   console.log(err);
-// });

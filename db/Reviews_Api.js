@@ -3,27 +3,43 @@ const Characteristic = require('./Models/Characteristic.js');
 const Characteristic_Review = require('./Models/Characteristic_Review.js');
 const Reviews_Photo = require('./Models/Reviews_Photo.js');
 const Product = require('./Models/Product.js');
+const moment = require('moment');
+const Sequelize = require('sequelize');
 
 const getReviews = function(productId, sort, page, count) {
   let off = page * count - count;
+  let sorter = [];
+  if (sort === 'helpful') {
+    sorter = [['helpfulness', 'DESC']];
+  } else if (sort === 'relevant') {
+    sorter = [[Sequelize.literal('helpfulness * 86400000 + date'), 'DESC']];
+  } else {
+    sorter = [['date', 'DESC']];
+  }
   return Review.findAll({ 
     attributes: [
-      review_id,
-      rating,
-      summary,
-      recommend,
-      response,
-      body,
-      date,
-      reviewer_name,
-      helpfulness,
+      'review_id',
+      'rating',
+      'summary',
+      'recommend',
+      'response',
+      'body',
+      'date',
+      'reviewer_name',
+      'helpfulness',
     ],
     where: {
       product_id: productId
     },
+    order: sorter,
     offset: off, 
     limit: count 
-  });
+  }).then((results) => {
+    for (let i = 0; i < results.length; i++) {
+      results[i].date = moment(parseInt(results[i].date)).toISOString();
+    }
+    return results;
+  })
 }
 
 const getMeta = async function(productId) {
@@ -32,7 +48,9 @@ const getMeta = async function(productId) {
 
   let proms = [getRatings(productId).then((vals) => {
     for (var i = 0; i < vals.length; i++) {
-      ratingsObj[i+1] = vals[i];
+      if (vals[i] > 0) {
+        ratingsObj[i+1] = vals[i];
+      }
     }
   }),  
   getRecommended(productId).then((val) => {
@@ -86,10 +104,50 @@ const getCharReviewAverage = function(charId) {
   });
 }
 
-
 const addReview = function(obj) {
-  obj.date = Date.now();
-  return Review.create(obj);
+  let newObj = {};
+  newObj.review_id = null;
+  newObj.product_id = obj.product_id;
+  newObj.rating = obj.rating;
+  newObj.date = Date.now();
+  newObj.summary = obj.summary;
+  newObj.body = obj.body;
+  newObj.recommend = obj.recommend;
+  // newObj.reported = null;
+  newObj.reviewer_name = obj.name;
+  newObj.reviewer_email = obj.email;
+  newObj.response = null;
+  // newObj.helpfulness = 0;
+
+  return Review.create(newObj)
+  .then((result) => {
+    let proms = [];
+    let rid = result.dataValues.review_id;
+    if (obj.photos) {
+      // console.log(obj.photos);
+      for (var i = 0; i < obj.photos.length; i++) {
+        proms.push(Reviews_Photo.create({ review_id: rid, url: obj.photos[i]}));
+      }
+    }
+    let chars = Object.keys(obj.characteristics);
+    let vals = Object.values(obj.characteristics);
+    for (var j = 0; j < chars.length; j++) {
+      proms.push(Characteristic_Review.create({ review_id: rid, value: vals[j], characteristic_id: parseInt(chars[j])}))
+    }
+    return Promise.all(proms);
+  });
+}
+
+const markHelpful = function(review_id) {
+  return Review.increment('helpfulness', { 
+    where: { review_id: review_id }
+  });
+}
+
+const reportReview = function(review_id) {
+  return Review.update({ reported: true }, { 
+    where: { review_id: review_id }
+  });
 }
 
 module.exports.getReviews = getReviews;
@@ -97,4 +155,5 @@ module.exports.addReview = addReview;
 module.exports.getChars = getChars;
 module.exports.getCharReviewAverage = getCharReviewAverage;
 module.exports.getMeta = getMeta;
-
+module.exports.markHelpful = markHelpful;
+module.exports.reportReview = reportReview;
