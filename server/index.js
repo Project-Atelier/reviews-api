@@ -33,7 +33,7 @@ app.get('/reviews', (req, res) => {
 app.get('/reviews/meta', (req, res) => {
   let productId = parseInt(req.query.product_id);
   let resObj = {};
-  resObj.product = productId;
+  resObj.product_id = productId;
 
   Review_Api.getMeta(productId).then((results) => {
     resObj.ratings = results[0];
