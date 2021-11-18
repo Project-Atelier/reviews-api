@@ -3,27 +3,42 @@ const Characteristic = require('./Models/Characteristic.js');
 const Characteristic_Review = require('./Models/Characteristic_Review.js');
 const Reviews_Photo = require('./Models/Reviews_Photo.js');
 const Product = require('./Models/Product.js');
+const moment = require('moment');
 
 const getReviews = function(productId, sort, page, count) {
   let off = page * count - count;
+  let sorter = [];
+  if (sort === 'helpful') {
+    sorter = [['helpfulness', 'DESC']];
+  } else if (sort === 'relevant') {
+
+  } else {
+    sorter = [['date', 'DESC']];
+  }
   return Review.findAll({ 
     attributes: [
-      review_id,
-      rating,
-      summary,
-      recommend,
-      response,
-      body,
-      date,
-      reviewer_name,
-      helpfulness,
+      'review_id',
+      'rating',
+      'summary',
+      'recommend',
+      'response',
+      'body',
+      'date',
+      'reviewer_name',
+      'helpfulness',
     ],
     where: {
       product_id: productId
     },
+    order: sorter,
     offset: off, 
     limit: count 
-  });
+  }).then((results) => {
+    for (let i = 0; i < results.length; i++) {
+      results[i].date = moment(results[i]).toISOString();
+    }
+    return results;
+  })
 }
 
 const getMeta = async function(productId) {
