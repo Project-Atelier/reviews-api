@@ -4,6 +4,7 @@ const Characteristic_Review = require('./Models/Characteristic_Review.js');
 const Reviews_Photo = require('./Models/Reviews_Photo.js');
 const Product = require('./Models/Product.js');
 const moment = require('moment');
+const Sequelize = require('sequelize');
 
 const getReviews = function(productId, sort, page, count) {
   let off = page * count - count;
@@ -11,7 +12,7 @@ const getReviews = function(productId, sort, page, count) {
   if (sort === 'helpful') {
     sorter = [['helpfulness', 'DESC']];
   } else if (sort === 'relevant') {
-
+    sorter = [[Sequelize.literal('helpfulness * 86400000 + date'), 'DESC']];
   } else {
     sorter = [['date', 'DESC']];
   }
@@ -35,8 +36,6 @@ const getReviews = function(productId, sort, page, count) {
     limit: count 
   }).then((results) => {
     for (let i = 0; i < results.length; i++) {
-      console.log(results[i].date);
-      console.log(typeof results[i].date);
       results[i].date = moment(parseInt(results[i].date)).toISOString();
     }
     return results;
