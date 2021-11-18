@@ -29,17 +29,43 @@ const getReviews = function(productId, sort, page, count) {
       'helpfulness',
     ],
     where: {
-      product_id: productId
+      product_id: productId,
+      reported: false
     },
     order: sorter,
     offset: off, 
     limit: count 
   }).then((results) => {
+    let proms = [];
     for (let i = 0; i < results.length; i++) {
       results[i].date = moment(parseInt(results[i].date)).toISOString();
+      proms.push(Reviews_Photo.findAll( { 
+        attributes: [
+          'id',
+          'url',
+        ],
+        where: {
+          review_id: results[i].review_id,
+        }
+      }));
     }
-    return results;
-  })
+    return Promise.all(proms).then((photos) => {
+      for (let i = 0; i < results.length; i++) {
+        let temp = [];
+        console.log(photos[i].length);
+        for (let j = 0; j < photos[i].length; j++) { 
+          //console.log(photos[i][j]);
+          //console.log(photos[i][j].dataValues);
+          temp.push(photos[i][j].dataValues);
+        }
+        console.log('loop over');
+        
+        results[i].dataValues.photos = temp.slice();
+        console.log(results[i]);
+      }
+      return results;
+    });
+  });
 }
 
 const getMeta = async function(productId) {
