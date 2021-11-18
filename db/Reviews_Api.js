@@ -52,16 +52,10 @@ const getReviews = function(productId, sort, page, count) {
     return Promise.all(proms).then((photos) => {
       for (let i = 0; i < results.length; i++) {
         let temp = [];
-        console.log(photos[i].length);
         for (let j = 0; j < photos[i].length; j++) { 
-          //console.log(photos[i][j]);
-          //console.log(photos[i][j].dataValues);
           temp.push(photos[i][j].dataValues);
         }
-        console.log('loop over');
-        
         results[i].dataValues.photos = temp.slice();
-        console.log(results[i]);
       }
       return results;
     });
@@ -69,21 +63,16 @@ const getReviews = function(productId, sort, page, count) {
 }
 
 const getMeta = async function(productId) {
-  let ratingsObj = {};
-  let recObj = {};
-
-  let proms = [getRatings(productId).then((vals) => {
+  return Promise.all([getRatings(productId).then((vals) => {
+    let ratingsObj = {};
     for (var i = 0; i < vals.length; i++) {
       if (vals[i] > 0) {
         ratingsObj[i+1] = vals[i];
       }
     }
+    return ratingsObj;
   }),  
-  getRecommended(productId).then((val) => {
-    recObj[0] = val;
-  })];
-  await Promise.all(proms);
-  return [ratingsObj, recObj];
+  getRecommendedObj(productId)]);
 }
 
 const getRatings = function(productId) {
@@ -98,11 +87,27 @@ const getRatings = function(productId) {
   }
   return Promise.all(proms);
 }
+const getRecommendedObj = function(productId) {
+  return Promise.all([
+    getRecommended(productId),
+    getNotRecommended(productId)
+  ]).then((results) => {
+    return {true: results[0], false: results[1]};
+  });
+}
 const getRecommended = function(productId) {
   return Review.count({ 
     where: {
       product_id: productId,
       recommend: true,
+    },
+  });
+}
+const getNotRecommended = function(productId) {
+  return Review.count({ 
+    where: {
+      product_id: productId,
+      recommend: false,
     },
   });
 }
