@@ -35,7 +35,9 @@ const getReviews = function(productId, sort, page, count) {
     limit: count 
   }).then((results) => {
     for (let i = 0; i < results.length; i++) {
-      results[i].date = moment(results[i]).toISOString();
+      console.log(results[i].date);
+      console.log(typeof results[i].date);
+      results[i].date = moment(parseInt(results[i].date)).toISOString();
     }
     return results;
   })
