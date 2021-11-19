@@ -82,6 +82,7 @@ const getMeta = async function(productId) {
   return resObj;
 }
 
+//#region meta helpers
 const getRatings = function(productId) {
   let proms = [];
   for (var i = 1; i < 6; i++) {
@@ -94,7 +95,7 @@ const getRatings = function(productId) {
   }
   return Promise.all(proms);
 }
-//#region recommended
+
 const getRecommendedObj = function(productId) {
   return Promise.all([
     getRecommended(productId),
@@ -119,7 +120,6 @@ const getNotRecommended = function(productId) {
     },
   });
 }
-//#endregion
 
 const getMetaChars = async function(product_id) {
   let chars = await getChars(product_id);
@@ -163,6 +163,7 @@ const getCharReviewAverage = function(charId) {
     return vals[1]/vals[0];
   });
 }
+//#endregion
 
 const addReview = function(obj) {
   let newObj = {};
