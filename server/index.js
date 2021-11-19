@@ -48,7 +48,7 @@ app.get('/reviews/meta', (req, res) => {
 });
 
 app.put('/reviews/:review_id/helpful', (req, res) => {
-  Review_Api.addReview(req.params.review_id).then((results) => {
+  Review_Api.markHelpful(req.params.review_id).then((results) => {
     res.sendStatus(204);
   }).catch((error) => {
     console.log(error);
@@ -60,7 +60,7 @@ app.put('/reviews/:review_id/helpful', (req, res) => {
 app.put('/reviews/:review_id/report', (req, res) => {
   
   Review_Api.reportReview(req.params.review_id).then((results) => {
-    res.sendStatus(201);
+    res.sendStatus(204);
   }).catch((error) => {
     console.log(error);
     res.status(500);
