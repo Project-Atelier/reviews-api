@@ -22,7 +22,8 @@ app.get('/reviews', (req, res) => {
   resObj.page = page;
   resObj.count = count;
   Review_Api.getReviews(productId, sort, page, count).then((results) => {
-    res.json(results);
+    resObj.results = results;
+    res.json(resObj);
   }).catch((error) => {
     console.log(error);
     res.status(500);
