@@ -63,7 +63,7 @@ const getReviews = function(productId, sort, page, count) {
 }
 
 const getMeta = async function(productId) {
-  return Promise.all([getRatings(productId).then((vals) => {
+  let results = await Promise.all([getRatings(productId).then((vals) => {
     let ratingsObj = {};
     for (var i = 0; i < vals.length; i++) {
       if (vals[i] > 0) {
@@ -72,7 +72,14 @@ const getMeta = async function(productId) {
     }
     return ratingsObj;
   }),  
-  getRecommendedObj(productId)]);
+    getRecommendedObj(productId),
+    getMetaChars(productId)
+  ]);
+  let resObj = {};
+  resObj.ratings = results[0];
+  resObj.recommended = results[1];
+  resObj.characteristics = results[2];
+  return resObj;
 }
 
 const getRatings = function(productId) {
@@ -87,6 +94,7 @@ const getRatings = function(productId) {
   }
   return Promise.all(proms);
 }
+//#region recommended
 const getRecommendedObj = function(productId) {
   return Promise.all([
     getRecommended(productId),
@@ -111,14 +119,35 @@ const getNotRecommended = function(productId) {
     },
   });
 }
+//#endregion
+
+const getMetaChars = async function(product_id) {
+  let chars = await getChars(product_id);
+  let avs = await Promise.all(chars.map((char) => {
+      return getCharReviewAverage(char.id);
+    }
+  ));
+  let obj = {};
+  for (let i = 0; i < chars.length; i++) {
+    obj[chars[i].dataValues.name] = {
+      id: chars[i].dataValues.id,
+      value: avs[i]
+    };
+  }
+  return obj;
+}
+
 const getChars = function(productId) {
   return Characteristic.findAll({ 
+    attributes: [
+      'id',
+      'name'
+    ],
     where: {
       product_id: productId
     },
   });
 }
-
 const getCharReviewAverage = function(charId) {
   let proms = [Characteristic_Review.count({ 
     where: {
@@ -183,8 +212,6 @@ const reportReview = function(review_id) {
 
 module.exports.getReviews = getReviews;
 module.exports.addReview = addReview;
-module.exports.getChars = getChars;
-module.exports.getCharReviewAverage = getCharReviewAverage;
 module.exports.getMeta = getMeta;
 module.exports.markHelpful = markHelpful;
 module.exports.reportReview = reportReview;
