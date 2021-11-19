@@ -22,7 +22,8 @@ app.get('/reviews', (req, res) => {
   resObj.page = page;
   resObj.count = count;
   Review_Api.getReviews(productId, sort, page, count).then((results) => {
-    res.json(results);
+    resObj.results = results;
+    res.json(resObj);
   }).catch((error) => {
     console.log(error);
     res.status(500);
@@ -36,9 +37,10 @@ app.get('/reviews/meta', (req, res) => {
   resObj.product_id = productId;
 
   Review_Api.getMeta(productId).then((results) => {
-    resObj.ratings = results[0];
-    resObj.recommended = results[1];
-    res.json(resObj);
+    // resObj.ratings = results[0];
+    // resObj.recommended = results[1];
+    // res.json(resObj);
+    res.json(results);
   }).catch((error) => {
     console.log(error);
     res.status(500);
@@ -47,7 +49,7 @@ app.get('/reviews/meta', (req, res) => {
 });
 
 app.put('/reviews/:review_id/helpful', (req, res) => {
-  Review_Api.addReview(req.params.review_id).then((results) => {
+  Review_Api.markHelpful(req.params.review_id).then((results) => {
     res.sendStatus(204);
   }).catch((error) => {
     console.log(error);
@@ -59,7 +61,7 @@ app.put('/reviews/:review_id/helpful', (req, res) => {
 app.put('/reviews/:review_id/report', (req, res) => {
   
   Review_Api.reportReview(req.params.review_id).then((results) => {
-    res.sendStatus(201);
+    res.sendStatus(204);
   }).catch((error) => {
     console.log(error);
     res.status(500);

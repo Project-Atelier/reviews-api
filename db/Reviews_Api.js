@@ -29,37 +29,60 @@ const getReviews = function(productId, sort, page, count) {
       'helpfulness',
     ],
     where: {
-      product_id: productId
+      product_id: productId,
+      reported: false
     },
     order: sorter,
     offset: off, 
     limit: count 
   }).then((results) => {
+    let proms = [];
     for (let i = 0; i < results.length; i++) {
       results[i].date = moment(parseInt(results[i].date)).toISOString();
+      proms.push(Reviews_Photo.findAll( { 
+        attributes: [
+          'id',
+          'url',
+        ],
+        where: {
+          review_id: results[i].review_id,
+        }
+      }));
     }
-    return results;
-  })
+    return Promise.all(proms).then((photos) => {
+      for (let i = 0; i < results.length; i++) {
+        let temp = [];
+        for (let j = 0; j < photos[i].length; j++) { 
+          temp.push(photos[i][j].dataValues);
+        }
+        results[i].dataValues.photos = temp.slice();
+      }
+      return results;
+    });
+  });
 }
 
 const getMeta = async function(productId) {
-  let ratingsObj = {};
-  let recObj = {};
-
-  let proms = [getRatings(productId).then((vals) => {
+  let results = await Promise.all([getRatings(productId).then((vals) => {
+    let ratingsObj = {};
     for (var i = 0; i < vals.length; i++) {
       if (vals[i] > 0) {
         ratingsObj[i+1] = vals[i];
       }
     }
+    return ratingsObj;
   }),  
-  getRecommended(productId).then((val) => {
-    recObj[0] = val;
-  })];
-  await Promise.all(proms);
-  return [ratingsObj, recObj];
+    getRecommendedObj(productId),
+    getMetaChars(productId)
+  ]);
+  let resObj = {};
+  resObj.ratings = results[0];
+  resObj.recommended = results[1];
+  resObj.characteristics = results[2];
+  return resObj;
 }
 
+//#region meta helpers
 const getRatings = function(productId) {
   let proms = [];
   for (var i = 1; i < 6; i++) {
@@ -72,6 +95,15 @@ const getRatings = function(productId) {
   }
   return Promise.all(proms);
 }
+
+const getRecommendedObj = function(productId) {
+  return Promise.all([
+    getRecommended(productId),
+    getNotRecommended(productId)
+  ]).then((results) => {
+    return {true: results[0], false: results[1]};
+  });
+}
 const getRecommended = function(productId) {
   return Review.count({ 
     where: {
@@ -80,14 +112,42 @@ const getRecommended = function(productId) {
     },
   });
 }
+const getNotRecommended = function(productId) {
+  return Review.count({ 
+    where: {
+      product_id: productId,
+      recommend: false,
+    },
+  });
+}
+
+const getMetaChars = async function(product_id) {
+  let chars = await getChars(product_id);
+  let avs = await Promise.all(chars.map((char) => {
+      return getCharReviewAverage(char.id);
+    }
+  ));
+  let obj = {};
+  for (let i = 0; i < chars.length; i++) {
+    obj[chars[i].dataValues.name] = {
+      id: chars[i].dataValues.id,
+      value: avs[i]
+    };
+  }
+  return obj;
+}
+
 const getChars = function(productId) {
   return Characteristic.findAll({ 
+    attributes: [
+      'id',
+      'name'
+    ],
     where: {
       product_id: productId
     },
   });
 }
-
 const getCharReviewAverage = function(charId) {
   let proms = [Characteristic_Review.count({ 
     where: {
@@ -103,6 +163,7 @@ const getCharReviewAverage = function(charId) {
     return vals[1]/vals[0];
   });
 }
+//#endregion
 
 const addReview = function(obj) {
   let newObj = {};
@@ -152,8 +213,6 @@ const reportReview = function(review_id) {
 
 module.exports.getReviews = getReviews;
 module.exports.addReview = addReview;
-module.exports.getChars = getChars;
-module.exports.getCharReviewAverage = getCharReviewAverage;
 module.exports.getMeta = getMeta;
 module.exports.markHelpful = markHelpful;
 module.exports.reportReview = reportReview;
