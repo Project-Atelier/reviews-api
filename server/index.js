@@ -3,7 +3,7 @@ const seq = require('../db/db.js');
 const Review_Api = require('../db/Reviews_Api.js');
 const app = express();
 app.use(express.json());
-const port = 3000;
+const port = 3001;
 
 app.get('/reviews', (req, res) => {
   let count = 5;
