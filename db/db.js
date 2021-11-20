@@ -6,7 +6,8 @@ const seq = new Sequelize(database, user, password, {
   host: '/var/run/postgresql',
   define: {
     timestamps: false
-  }
+  },
+  logging: false
 });
   
 // seq.authenticate().then(() => seq.sync({ force: true })).catch((error) => console.log(error));

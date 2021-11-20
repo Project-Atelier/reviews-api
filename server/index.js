@@ -37,9 +37,6 @@ app.get('/reviews/meta', (req, res) => {
   resObj.product_id = productId;
 
   Review_Api.getMeta(productId).then((results) => {
-    // resObj.ratings = results[0];
-    // resObj.recommended = results[1];
-    // res.json(resObj);
     res.json(results);
   }).catch((error) => {
     console.log(error);
