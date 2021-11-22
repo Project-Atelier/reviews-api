@@ -75,6 +75,20 @@ Review.init({
   }
 
 }, {
+  indexes: [
+    {
+      fields: ['product_id']
+    },
+    {
+      fields: ['rating']
+    },
+    {
+      fields: ['recommend']
+    },
+    {
+      fields: ['reported']
+    }
+  ],
   sequelize: seq
 });
 

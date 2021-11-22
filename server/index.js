@@ -5,6 +5,8 @@ const app = express();
 app.use(express.json());
 const port = 3001;
 
+// Review_Api.updateCharValues();
+
 app.get('/reviews', (req, res) => {
   let count = 5;
   let page = 1;

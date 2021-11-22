@@ -7,9 +7,9 @@ export const options = {
   scenarios: {
     contacts: {
       executor: 'constant-arrival-rate',
-      rate: 500, // 200 RPS, since timeUnit is the default 1s
+      rate: 100, // 200 RPS, since timeUnit is the default 1s
       duration: '30s',
-      preAllocatedVUs: 500,
+      preAllocatedVUs: 100,
       maxVUs: 10000,
     },
   },
@@ -18,7 +18,7 @@ export const options = {
 export default function () {
   let randi = Math.floor(Math.random() * 100000 + 900000);
   //let randi = Math.floor(Math.random() * 1000011);
-  http.get(`http://localhost:3001/reviews/?product_id=${randi}&sort=newest`);
+  http.get(`http://localhost:3001/reviews/?product_id=${randi}&sort=helpful`);
 
   //sleep(1);
 }

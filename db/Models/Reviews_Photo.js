@@ -23,6 +23,11 @@ Reviews_Photo.init({
   },
 
 }, {
+  indexes: [
+    {
+      fields: ['review_id']
+    }
+  ],
   sequelize: seq
 });
 

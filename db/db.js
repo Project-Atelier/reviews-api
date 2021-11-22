@@ -11,5 +11,6 @@ const seq = new Sequelize(database, user, password, {
 });
   
 // seq.authenticate().then(() => seq.sync({ force: true })).catch((error) => console.log(error));
+// seq.authenticate().then(() => seq.sync({ alter: true })).catch((error) => console.log(error));
 seq.authenticate().then(() => seq.sync()).catch((error) => console.log(error));
 module.exports = seq;
