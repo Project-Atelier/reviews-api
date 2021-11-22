@@ -1,7 +1,9 @@
 const { Sequelize, Model, DataTypes } = require('sequelize');
 const seq = require('../db.js');
 
-class Characteristic extends Model {}
+class Characteristic extends Model {
+  
+}
 
 Characteristic.init({
   id: {
@@ -21,8 +23,15 @@ Characteristic.init({
     type: DataTypes.TEXT,
     allowNull: false,
   },
-  
+  value: {
+    type: DataTypes.DECIMAL,
+  }
 }, {
+  indexes: [
+    {
+      fields: ['product_id']
+    }
+  ],
   sequelize: seq
 });
 

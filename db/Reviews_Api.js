@@ -12,7 +12,7 @@ const getReviews = function(productId, sort, page, count) {
   if (sort === 'helpful') {
     sorter = [['helpfulness', 'DESC']];
   } else if (sort === 'relevant') {
-    sorter = [[Sequelize.literal('helpfulness * 86400000 + date'), 'DESC']];
+    sorter = [[Sequelize.literal('helpfulness  + date/86400000'), 'DESC']];
   } else {
     sorter = [['date', 'DESC']];
   }
@@ -82,6 +82,8 @@ const getMeta = async function(productId) {
   return resObj;
 }
 
+
+
 //#region meta helpers
 const getRatings = function(productId) {
   let proms = [];
@@ -122,6 +124,29 @@ const getNotRecommended = function(productId) {
 }
 
 const getMetaChars = async function(product_id) {
+  return getChars(product_id).then((results) => {
+    let obj = {};
+    for (let i = 0; i < results.length; i++) {
+      obj[results[i].dataValues.name] = {
+        id: results[i].dataValues.id,
+        value: results[i].dataValues.value
+      };
+    }
+    return obj;
+  });
+  
+ 
+  for (let i = 0; i < chars.length; i++) {
+    obj[chars[i].dataValues.name] = {
+      id: chars[i].dataValues.id,
+      value: avs[i]
+    };
+  }
+  return obj;
+}
+
+
+const getMetaCharsOld = async function(product_id) {
   let chars = await getChars(product_id);
   let avs = await Promise.all(chars.map((char) => {
       return getCharReviewAverage(char.id);
@@ -141,7 +166,8 @@ const getChars = function(productId) {
   return Characteristic.findAll({ 
     attributes: [
       'id',
-      'name'
+      'name',
+      'value'
     ],
     where: {
       product_id: productId
@@ -165,6 +191,29 @@ const getCharReviewAverage = function(charId) {
 }
 //#endregion
 
+
+const updateCharValues = async function(productId) {
+  let chars = await getChars(productId);
+  let avs = await Promise.all(chars.map((char) => {
+      return getCharReviewAverage(char.id);
+    }
+  ));
+  let proms = [];
+  for (let i = 0; i < chars.length; i++) {
+    proms.push(Characteristic.update(
+      {
+        value: avs[i]
+      },
+      {
+        where: {
+          id: chars[i].id
+        }
+      }
+    ));
+  }
+  return Promise.all(proms);
+}
+
 const addReview = function(obj) {
   let newObj = {};
   newObj.review_id = null;
@@ -178,6 +227,7 @@ const addReview = function(obj) {
   newObj.reviewer_name = obj.name;
   newObj.reviewer_email = obj.email;
   newObj.response = null;
+  let pid = obj.product_id;
   // newObj.helpfulness = 0;
 
   return Review.create(newObj)
@@ -195,7 +245,9 @@ const addReview = function(obj) {
     for (var j = 0; j < chars.length; j++) {
       proms.push(Characteristic_Review.create({ review_id: rid, value: vals[j], characteristic_id: parseInt(chars[j])}))
     }
-    return Promise.all(proms);
+    return Promise.all(proms).then(() => { 
+      updateCharValues(pid);
+    });
   });
 }
 
@@ -211,8 +263,10 @@ const reportReview = function(review_id) {
   });
 }
 
+
 module.exports.getReviews = getReviews;
 module.exports.addReview = addReview;
 module.exports.getMeta = getMeta;
 module.exports.markHelpful = markHelpful;
 module.exports.reportReview = reportReview;
+module.exports.updateCharValues = updateCharValues;
