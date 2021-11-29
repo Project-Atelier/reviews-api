@@ -1,5 +1,6 @@
 import http from 'k6/http';
 import { sleep } from 'k6';
+const port = require('../../port.js');
 export const options = {
   // vus: 1000,
   // duration: '30s',
@@ -21,7 +22,7 @@ export const options = {
 export default function () {
   let randi = Math.floor(Math.random() * 100000 + 900000);
   // let randi = Math.floor(Math.random() * 1000011);
-  const url = `http://localhost:3001/reviews/meta/?product_id=${randi}`;
+  const url = `http://localhost:${port}/reviews/meta/?product_id=${randi}`;
   // console.log(url);
   const res = http.get(url);
   // console.log(res.body);

@@ -2,11 +2,13 @@
 // something.test.js
 
 const pactum = require('pactum');
-
+const port = require('../../port.js');
+const baseUrl = `http://localhost:${port}/`;
+const postUrl = baseUrl + 'reviews';
 
 test('should save a new user', async () => {
   await pactum.spec()
-    .post('http://localhost:3000/reviews')
+    .post(postUrl)
     .withJson({
       "product_id": 1,
       "rating": 1,

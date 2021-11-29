@@ -1,19 +1,20 @@
 // make sure file name follows convention:
 // something.test.js
-
+const port = require('../../port.js');
 const pactum = require('pactum');
 
-
+const baseUrl = `http://localhost:${port}/`;
+const metaUrl =  baseUrl + 'reviews/meta?product_id=40344';
 
 test('return review metadata with code 200', async () => {
   await pactum.spec()
-    .get('http://localhost:3000/reviews/meta?product_id=40344')
+    .get(metaUrl)
     .expectStatus(200)
 });
 
 test('return review metadata with ratings property', async () => {
   await pactum.spec()
-    .get('http://localhost:3000/reviews/meta?product_id=40344')
+    .get(metaUrl)
     .expectJsonLike({
       ratings: 
         {
@@ -28,7 +29,7 @@ test('return review metadata with ratings property', async () => {
 
 test('return review metadata with recommended property', async () => {
   await pactum.spec()
-    .get('http://localhost:3000/reviews/meta?product_id=40344')
+    .get(metaUrl)
     .expectJsonLike({
       recommended: 
         {
@@ -40,7 +41,7 @@ test('return review metadata with recommended property', async () => {
 
 test('return review metadata with characteristics property', async () => {
   await pactum.spec()
-    .get('http://localhost:3000/reviews/meta?product_id=40344')
+    .get(metaUrl)
     .expectJsonLike({
       characteristics: 
         {

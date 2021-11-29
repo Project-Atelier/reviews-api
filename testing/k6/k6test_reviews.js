@@ -1,5 +1,6 @@
 import http from 'k6/http';
 import { sleep } from 'k6';
+const port = require('../../port.js');
 export const options = {
   // vus: 10,
   // duration: '30s',
@@ -7,10 +8,10 @@ export const options = {
   scenarios: {
     contacts: {
       executor: 'constant-arrival-rate',
-      rate: 600, // 200 RPS, since timeUnit is the default 1s
+      rate: 400, // RPS, since timeUnit is the default 1s
       duration: '30s',
-      preAllocatedVUs: 600,
-      maxVUs: 10000,
+      preAllocatedVUs: 400,
+      maxVUs: 1000,
     },
   },
 }; 
@@ -18,7 +19,7 @@ export const options = {
 export default function () {
   let randi = Math.floor(Math.random() * 100000 + 900000);
   //let randi = Math.floor(Math.random() * 1000011);
-  http.get(`http://localhost:3001/reviews/?product_id=${randi}&sort=newest`);
+  http.get(`http://localhost:${port}/reviews/?product_id=${randi}&sort=newest`);
 
   //sleep(1);
 }
