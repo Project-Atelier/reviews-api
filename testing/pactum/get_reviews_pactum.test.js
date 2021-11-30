@@ -2,24 +2,26 @@
 // something.test.js
 
 const pactum = require('pactum');
-
+const port = require('../../port.js');
+const baseUrl = `http://localhost:${port}/`;
+const reviewsUrl = baseUrl + 'reviews/?product_id=40344';
 
 
 test('return reviews with code 200', async () => {
   await pactum.spec()
-    .get('http://localhost:3000/reviews/?product_id=40344')
+    .get(reviewsUrl)
     .expectStatus(200)
 });
 
 test('return reviews with results property', async () => {
   await pactum.spec()
-    .get('http://localhost:3000/reviews/?product_id=40344')
+    .get(reviewsUrl)
     .expectBodyContains('results');
 });
 
 test('results should contain reviews', async () => {
   await pactum.spec()
-    .get('http://localhost:3000/reviews/?product_id=40344')
+    .get(reviewsUrl)
     .expectJsonLike({
       product: 40344,
       page: 1,

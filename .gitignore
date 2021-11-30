@@ -10,3 +10,5 @@ package-lock.json
 **bundle.js**
 
 db/config.js
+
+reviews-db-dump

@@ -129,20 +129,11 @@ const getMetaChars = async function(product_id) {
     for (let i = 0; i < results.length; i++) {
       obj[results[i].dataValues.name] = {
         id: results[i].dataValues.id,
-        value: results[i].dataValues.value
+        value: Number.parseFloat(results[i].dataValues.value)
       };
     }
     return obj;
   });
-  
- 
-  for (let i = 0; i < chars.length; i++) {
-    obj[chars[i].dataValues.name] = {
-      id: chars[i].dataValues.id,
-      value: avs[i]
-    };
-  }
-  return obj;
 }
 
 
