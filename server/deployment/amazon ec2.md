@@ -22,7 +22,9 @@ if permission error about file: <br> mac terminal checks to make sure the correc
 chmod 400 keyfilename.pem
 ```
  ---
-### Putty:
+### Putty: Windows SSH Client
+https://www.putty.org/
+
 IP Address: Make sure you use public IP from EC2 instance<br>
 Don't forget to give it a name and save it after configuring so you can reuse your settings easily.<br>
 The IP will probably change when your EC2 instance reboots, but this will keep your authorization settings.
@@ -100,6 +102,10 @@ Type in the name you gave it, don't forget to save!:<br>
 
 	
 ## File uploading:
+This section is not complete.
+
+I prefer WinSCP (windows only):  https://winscp.net/eng/index.php <br>
+The most popular is Filezilla: https://filezilla-project.org/
 - FTP client of your choice.
 - You will need to add the key similar to in putty
 - same IP
