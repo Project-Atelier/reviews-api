@@ -4,29 +4,45 @@
 # Amazon ec2 ubuntu setup:
 
 ## connecting: 
-
-
-mac terminal:<br> include path to key file or run terminal from the same directory as the key <br> LOWER CASE i or command will fail!
-
-	ssh -i filename.pem username@ipaddress
-
+- Requirements: SSH client or terminal
+---
+### mac terminal:
+- include path to key file or run terminal from the same directory as the key <br> LOWER CASE i or command will fail!
+```
+ssh -i filename.pem username@ipaddress
+```
 example:
 
-	ssh -i feckey.pem ubuntu@123.122.121.1
-
+```
+ssh -i feckey.pem ubuntu@123.122.121.1
+```
 if permission error about file: <br> mac terminal checks to make sure the correct permissions are set on the key file so it cannot be modified except by the owner
 
-	chmod 400 keyfilename.pem
- 
-In putty:
+```
+chmod 400 keyfilename.pem
+```
+ ---
+### Putty:
+IP Address: Make sure you use public IP from EC2 instance<br>
+Don't forget to give it a name and save it after configuring so you can reuse your settings easily.<br>
+The IP will probably change when your EC2 instance reboots, but this will keep your authorization settings.
+<br>
+![putty1.png](putty1.png)
+
+### Auth
 - Connection -> SSH -> Auth
 - Choose a file
 
 ![putty.png](putty.png)
 
+If your file is in .pem format, you need to convert to .ppk for putty. Use puttygen to do this. It comes with putty.
 
-- login:
-	- user: ubuntu
+1. Import the file into puttygen<br>![puttygen1.png](puttygen1.png) 
+2. Save private key (You can add a password, I personally do not)<br>![puttygen2.png](puttygen2.png) 
+
+---
+### login:
+- user: ubuntu
 ---
 ## Setup
 
@@ -190,11 +206,11 @@ node server/index.js > server/server.log 2>  server/server_err.log
 Note: the quote ticks around the entire last section
 
 ---
----
-## SDC stuff
------
 
-### postgres install
+# SDC stuff
+
+
+## postgres install
 
 ```
 sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list' 
@@ -211,39 +227,64 @@ sudo apt-get update
 ```
 sudo apt-get -y install postgresql-12
 ```
+---
+## postgres setup
+---
 
-### postgres setup
 
-service
+### postgres service commands
 ```
 sudo service postgresql stop
 sudo service postgresql start
 sudo service postgresql restart
 ```
-users
+---
+### user/role creation
+>you need to create the roles/users that your application uses to connect to the postgres database
+
+> creating the ubuntu role gives your terminal the power to run the command to create database, 
 ```
 create role namehere with superuser login password 'pw';
 create role ubuntu with superuser login password 'pw';
 ```
-create database - MUST BE RUN OUTSIDE OF POSTGRES TERMINAL
+---
+### create database
+>MUST BE RUN OUTSIDE OF POSTGRES TERMINAL
 ```
 createdb dbnamehere
 ```
+---
+### postgres terminal
 
-postgres terminal
+
+cheat sheet: 
+>https://gist.github.com/Kartones/dd3ff5ec5ea238d4c546
 ```
 sudo -u postgres psql
 ```
-import dumpfile
+---
+### import dumpfile
 ```
-psql reviews < filename
-psql reviews < reviews-db-dump
+psql dbname < filename
 ```
-
-fix for password connection
+---
+### fix for password connection
+The config file for connecting to postgres needs to be updated to md5 from peer for local connections. This may interfere with creating the database. Peer checks if your username in terminal/ubuntu is the same as postgres username. Md5 means you need to login with password.
 ```
 sudo nano /etc/postgresql/12/main/pg_hba.conf
 ```
 
 ![ps1](ps1.png)<br>
 
+-----
+## database duplicatation
+
+https://www.postgresql.org/docs/9.3/app-pgdump.html <br>
+https://www.postgresql.org/docs/9.4/backup-dump.html
+
+dump file: contains all the commands to recreate the entire database from scratch
+
+```
+pg_dump dbname > dumpfile
+```
+warning: if you don't specify the output file it will log the output to your screen INSTEAD of a file
