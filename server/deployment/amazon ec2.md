@@ -240,5 +240,10 @@ psql reviews < filename
 psql reviews < reviews-db-dump
 ```
 
+fix for password connection
+```
+sudo nano /etc/postgresql/12/main/pg_hba.conf
+```
 
+![ps1](ps1.png)<br>
 
