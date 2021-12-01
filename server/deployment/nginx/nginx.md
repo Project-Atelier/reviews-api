@@ -56,7 +56,7 @@ proxy_cache_path /var/cache/nginx levels=1:2 keys_zone=my_cache:10m max_size=10g
 upstream sdcgroup {
   least_conn;
   keepalive 500;
-  # API public IPs go here
+  # API public IPs go below here
   # example: server 123.456.789.01:9999;
   server PublicIpHoesHere:PortNumberGoesHere;
   server PublicIpHoesHere:PortNumberGoesHere;
