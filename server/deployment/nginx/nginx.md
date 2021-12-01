@@ -47,12 +47,13 @@ what to add:<br>
 - by default it will redirect all requests
   - you can add a path to the location for specific endpoint routing
   - you can also add extra locations for multiple endpoint routing 
+- you can add multiple upstream groups for separate route/endpoint/api handling
 
-what it does: 
 ```
 proxy_cache_path /var/cache/nginx levels=1:2 keys_zone=my_cache:10m max_size=10g 
                  inactive=60m use_temp_path=off;
 
+# sdcgroup is just the name given to this server group, you can rename it what ever you like
 upstream sdcgroup {
   least_conn;
   keepalive 500;
@@ -83,6 +84,7 @@ server {
   }
 }
 ```
+what it does: 
 
 restart Nginx after changing config:
 ```
