@@ -47,6 +47,8 @@ what to add:<br>
 - by default it will redirect all requests
   - you can add a path to the location for specific endpoint routing
   - you can also add extra locations for multiple endpoint routing 
+
+what it does: 
 ```
 proxy_cache_path /var/cache/nginx levels=1:2 keys_zone=my_cache:10m max_size=10g 
                  inactive=60m use_temp_path=off;
@@ -54,6 +56,8 @@ proxy_cache_path /var/cache/nginx levels=1:2 keys_zone=my_cache:10m max_size=10g
 upstream sdcgroup {
   least_conn;
   keepalive 500;
+  # API public IPs go here
+  # example: server 123.456.789.01:9999;
   server PublicIpHoesHere:PortNumberGoesHere;
   server PublicIpHoesHere:PortNumberGoesHere;
   # queue 100 timeout=100; # you may have to delete this line for it to work
