@@ -34,12 +34,19 @@ sudo systemctl start nginx
 ```
 ---
 ### Configuration
-config file:
+config file:<br>
 default location and open in nano:
 ```
 sudo nano /etc/nginx/sites-enabled/default
 ```
-config file:
+what to add:<br>
+- You will need to add your API server IPs and Ports in the appropriate area.<br>
+- 1 server per line
+- included is the section for loader Io testing verification
+  - substitute your token in
+- by default it will redirect all requests
+  - you can add a path to the location for specific endpoint routing
+  - you can also add extra locations for multiple endpoint routing 
 ```
 proxy_cache_path /var/cache/nginx levels=1:2 keys_zone=my_cache:10m max_size=10g 
                  inactive=60m use_temp_path=off;
@@ -56,7 +63,7 @@ server {
   listen 80 backlog=4096;
   gzip on;
 
-  # optionally: location /<your api endpoint> {
+  # optional: location /URLPATHTOREDIRECTGOESHERE {
   location / {
     proxy_http_version 1.1;
     proxy_set_header Connection "";
