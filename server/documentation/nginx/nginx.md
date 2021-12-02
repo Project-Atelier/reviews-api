@@ -85,12 +85,13 @@ server {
 }
 ```
 what it does: 
+  - upstream: 
 
 restart Nginx after changing config:
 ```
 sudo systemctl restart nginx
 ```
-
+    
 
 
 
